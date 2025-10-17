@@ -1,32 +1,30 @@
 #!/bin/bash
 set -ex
-
-# Actalizamos los repositorios
+# Install_lamp.sh
+## Instalamos Apache HTTP Server, MariaDB y PHP en un sistema Red Hat
+### Actualizamos los repositorios
 dnf update -y
 
-# Instalamos el servidor web apacheHTTP server
-dnf install httpd -y
+### Instalamos Apache HTTP Server
+dnf install -y httpd
 
-#Iniciamos y ahabilitamos el servicio de Apache
-systemctl start httpd
-systemctl enable httpd
+### Iniciamos y habilitamos Apache
+systemctl enable --now httpd
 
-# Copiamos el archivo de configuracion de Apache
-cp ../Conf/000-default.conf /etc/httpd/conf.d
+### Copiamos el archivo de configuración (ajustado para Red Hat)
+cp ../Conf/000-default.conf /etc/httpd/conf.d/default.conf
 
-# Instalamos MYSQL server
-dnf install mariadb-server -y
+### Instalamos MariaDB (MySQL compatible)
+dnf install -y mariadb-server
 
-# Iniciamos y ahabilitamos el servicio de MYSQL
-systemctl start mariadb.service
-systemctl enable mariadb.service
+### Iniciamos y habilitamos MariaDB
+systemctl enable --now mariadb
 
-# Instalamos PHP
-dnf install php -y
+### Instalamos PHP y extensión para MySQL
+dnf install -y php php-mysqlnd
 
-# Instalamos la extensión de PHP para conectar con MySQL.
-dnf install php-mysqlnd -y
+### Copiamos el archivo index.php de la práctica al directorio raíz de Apache
+cp Practica02-iaw/php/index.php /var/www/html/index.php
 
-# Reiniciar el servicio de Apache para que se apliquen los cambios.
+### Reiniciamos Apache para aplicar cambios
 systemctl restart httpd
-
